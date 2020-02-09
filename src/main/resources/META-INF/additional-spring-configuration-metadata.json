@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "ecb.historical-data-url",
+      "type": "java.lang.String",
+      "description": "European Central Bank's historical data URL."
+    }
+  ]
+}
