@@ -32,7 +32,7 @@ public class InitialExchangeRateDataLoader {
             } catch (RestClientException e) {
                 log.error("An error occurred while requesting ECB service.", e);
             } catch (JsonProcessingException e) {
-                log.error("An error occurred while initializing database.", e);
+                log.error("An error occurred while parsing response.", e);
             }
         } else {
             log.info("Database is not empty");
