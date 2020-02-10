@@ -2,7 +2,6 @@ package io.github.vergl.currator.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import io.github.vergl.currator.config.properties.EcbProperties;
 import io.github.vergl.currator.domain.ecb.EcbEnvelope;
 import io.github.vergl.currator.service.EcbService;
@@ -33,7 +32,7 @@ public class EcbServiceImpl implements EcbService {
     }
 
     @Override
-    public EcbEnvelope loadHistoryRates() throws JsonProcessingException, RestClientException {
+    public EcbEnvelope loadHistoryRates() throws JsonProcessingException {
         ResponseEntity<String> response = restTemplate.exchange(
                 ecbProperties.getHistoricalDataUrl(),
                 HttpMethod.GET,

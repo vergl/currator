@@ -40,7 +40,7 @@ public class InitialExchangeRateDataLoader {
         log.info("Database initialization has finished.");
     }
 
-    private void initializeDb() throws JsonProcessingException, RestClientException {
+    private void initializeDb() throws JsonProcessingException {
         long startTime = System.currentTimeMillis();
         log.info("Loading data from European Central Bank...");
         EcbEnvelope envelope = ecbService.loadHistoryRates();
