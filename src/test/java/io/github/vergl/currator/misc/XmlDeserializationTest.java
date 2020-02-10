@@ -1,4 +1,4 @@
-package io.github.vergl.currator.service;
+package io.github.vergl.currator.misc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -18,13 +18,12 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class XmlDeserializationTest {
-
     @Test
     @DisplayName("Jackson should deserialize XML")
-    public void testMapper() throws IOException {
+    public void XmlMapperShouldDeserializeXml() throws IOException {
         ObjectMapper mapper = new XmlMapper();
-
         File xmlData = new ClassPathResource("exampledata.xml").getFile();
+
         EcbEnvelope result = mapper.readValue(xmlData, EcbEnvelope.class);
         Assertions.assertNotNull(result);
         Assertions.assertEquals("Reference rates", result.getSubject());
@@ -41,7 +40,7 @@ public class XmlDeserializationTest {
         Assertions.assertNotNull(ratesByCurrentDate);
 
         Date rateDate = ratesByCurrentDate.getDate();
-        SimpleDateFormat sdf = new SimpleDateFormat("YYYY-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Assertions.assertEquals("2020-02-07", sdf.format(rateDate));
 
         List<EcbRate> rates = ratesByCurrentDate.getRates();
@@ -50,6 +49,7 @@ public class XmlDeserializationTest {
 
         EcbRate usdRate = rates.get(0);
         Assertions.assertEquals(Currency.USD, usdRate.getCurrency());
+        Assertions.assertEquals("US dollar", usdRate.getCurrency().getLabel());
         Assertions.assertEquals(1.0969, usdRate.getRate());
     }
 }
