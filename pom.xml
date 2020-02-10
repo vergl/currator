@@ -15,7 +15,7 @@
     <description>Currency Exchange Rate API Proof-of-Concept Application</description>
 
     <properties>
-        <java.version>13</java.version>
+        <java.version>11</java.version>
         <sonar.projectKey>currator</sonar.projectKey>
         <sonar.organization>vergl</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
