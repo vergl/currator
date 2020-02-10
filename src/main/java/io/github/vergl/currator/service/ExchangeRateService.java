@@ -9,6 +9,7 @@ import java.util.Date;
 public interface ExchangeRateService {
     ExchangeRate getExchangeRateByDateAndCurrency(Date date, Currency currency);
     ExchangeRate save(ExchangeRate rate);
+    ExchangeRate saveOrUpdate(ExchangeRate rate);
     Long count();
     void writeEcbRatesToDb(EcbEnvelope envelope);
 }

@@ -31,6 +31,17 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
     }
 
     @Override
+    public ExchangeRate saveOrUpdate(ExchangeRate rate) {
+        ExchangeRate foundRate = exchangeRateRepository.findByDateAndCurrency(rate.getDate(), rate.getCurrency());
+        if (foundRate == null) {
+            return exchangeRateRepository.save(rate);
+        } else {
+            foundRate.setRate(rate.getRate());
+            return exchangeRateRepository.save(foundRate);
+        }
+    }
+
+    @Override
     public Long count() {
         return exchangeRateRepository.count();
     }
