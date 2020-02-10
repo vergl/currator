@@ -19,7 +19,7 @@ public class JacksonConfig {
     public ObjectMapper objectMapper() {
         return Jackson2ObjectMapperBuilder
                 .json()
-                .dateFormat(new SimpleDateFormat("YYYY-MM-dd"))
+                .dateFormat(new SimpleDateFormat("yyyy-MM-dd"))
                 .build();
     }
 }
