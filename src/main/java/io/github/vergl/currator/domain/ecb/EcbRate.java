@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class EcbRate {
+
     @JacksonXmlProperty(isAttribute = true)
     private Currency currency;
+
     @JacksonXmlProperty(isAttribute = true)
     private Double rate;
 }

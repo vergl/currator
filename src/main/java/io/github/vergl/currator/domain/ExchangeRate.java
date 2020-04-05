@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -27,6 +28,7 @@ import java.util.Date;
         uniqueConstraints = @UniqueConstraint(
                 columnNames = {"BASE_CURRENCY", "CURRENCY", "DATE"}))
 public class ExchangeRate {
+
     @Id
     @GeneratedValue
     @Column(name = "ID")

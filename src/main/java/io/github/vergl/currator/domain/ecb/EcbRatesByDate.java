@@ -10,8 +10,10 @@ import java.util.List;
 
 @Data
 public class EcbRatesByDate {
+
     @JacksonXmlProperty(isAttribute = true, localName = "time")
     private Date date;
+
     @JacksonXmlProperty(localName = "Cube")
     @JacksonXmlElementWrapper(useWrapping = false)
     private List<EcbRate> rates = new ArrayList<>();

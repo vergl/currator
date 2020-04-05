@@ -1,6 +1,7 @@
 package io.github.vergl.currator.domain.enumeration;
 
 public enum Currency {
+
     EUR("EU euro"),
     USD("US dollar"),
     JPY("Japanese yen"),
@@ -44,9 +45,9 @@ public enum Currency {
     TRL("Turkish lira (first)"),
     ZAR("South African rand");
 
-    private String label;
+    private final String label;
 
-    private Currency(String label) {
+    Currency(String label) {
         this.label = label;
     }
 

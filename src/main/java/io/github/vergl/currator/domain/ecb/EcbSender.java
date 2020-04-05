@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class EcbSender {
+
     @JacksonXmlProperty(namespace = "gesmes")
     private String name;
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.vergl.currator.domain.ecb.EcbEnvelope;
 import io.github.vergl.currator.service.EcbService;
 import io.github.vergl.currator.service.ExchangeRateService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -12,15 +13,11 @@ import org.springframework.web.client.RestClientException;
 
 @Log4j2
 @Service
+@RequiredArgsConstructor
 public class InitialExchangeRateDataLoader {
+
     private final ExchangeRateService exchangeRateService;
     private final EcbService ecbService;
-
-    public InitialExchangeRateDataLoader(ExchangeRateService exchangeRateService,
-                                         EcbService ecbService) {
-        this.exchangeRateService = exchangeRateService;
-        this.ecbService = ecbService;
-    }
 
     @EventListener(ApplicationReadyEvent.class)
     public void loadInitialData() {

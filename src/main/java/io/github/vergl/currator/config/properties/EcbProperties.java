@@ -8,5 +8,9 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "ecb")
 public class EcbProperties {
+
+    /**
+     * European Central Bank's historical data URL.
+     */
     private String historicalDataUrl;
 }

@@ -10,10 +10,13 @@ import java.util.List;
 @Data
 @JacksonXmlRootElement(namespace = "gesmes")
 public class EcbEnvelope {
+
     @JacksonXmlProperty(namespace = "gesmes")
     private String subject;
+
     @JacksonXmlProperty(namespace = "gesmes", localName = "Sender")
     private EcbSender sender;
+
     @JacksonXmlProperty(localName = "Cube")
     private List<EcbRatesByDate> rates = new ArrayList<>();
 }
