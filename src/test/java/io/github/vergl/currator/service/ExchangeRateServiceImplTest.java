@@ -2,7 +2,7 @@ package io.github.vergl.currator.service;
 
 import io.github.vergl.currator.domain.ExchangeRate;
 import io.github.vergl.currator.domain.ExchangeRateDto;
-import io.github.vergl.currator.domain.converter.ExchangeRateConverter;
+import io.github.vergl.currator.domain.converter.ExchangeRateDtoConverter;
 import io.github.vergl.currator.domain.ecb.EcbEnvelope;
 import io.github.vergl.currator.domain.ecb.EcbRate;
 import io.github.vergl.currator.domain.ecb.EcbRatesByDate;
@@ -52,14 +52,14 @@ public class ExchangeRateServiceImplTest {
     private ExchangeRateMapper exchangeRateMapper;
 
     @Mock
-    private ExchangeRateConverter exchangeRateConverter;
+    private ExchangeRateDtoConverter exchangeRateDtoConverter;
 
     @BeforeEach
     public void setUp() {
         exchangeRateService = new ExchangeRateServiceImpl(
                 exchangeRateRepository,
                 exchangeRateMapper,
-                exchangeRateConverter);
+                exchangeRateDtoConverter);
     }
 
     @Test
@@ -78,12 +78,12 @@ public class ExchangeRateServiceImplTest {
     @DisplayName("getByDate() with correct filter date should return DTO")
     public void getByDate_withCorrectFilter() {
         Date newYear2020 = new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime();
-        ExchangeRate exchangeRate = ExchangeRate.builder()
-                .date(newYear2020)
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.USD)
-                .rate(1.3)
-                .build();
+        ExchangeRate exchangeRate = new ExchangeRate();
+        exchangeRate.setDate(newYear2020);
+        exchangeRate.setBaseCurrency(Currency.EUR);
+        exchangeRate.setCurrency(Currency.USD);
+        exchangeRate.setRate(1.3);
+
         ExchangeRateDto dto = new ExchangeRateDto();
         dto.setDate(newYear2020);
         dto.setBase(Currency.EUR);
@@ -98,7 +98,7 @@ public class ExchangeRateServiceImplTest {
                 .thenReturn(Collections.singletonList(exchangeRate));
         when(exchangeRateMapper.entityListToDto(Collections.singletonList(exchangeRate)))
                 .thenReturn(dto);
-        when(exchangeRateConverter.convertToBaseCurrency(dto, filter))
+        when(exchangeRateDtoConverter.convertToBaseCurrency(dto, filter))
                 .thenReturn(dto);
 
         ExchangeRateDto result = exchangeRateService.getByDate(filter);
@@ -109,19 +109,19 @@ public class ExchangeRateServiceImplTest {
         Mockito.verify(exchangeRateRepository).findFirstByDateLessThanEqualOrderByDateDesc(newYear2020);
         Mockito.verify(exchangeRateRepository).findByDateAndCurrencyIn(newYear2020, new HashSet<>(Set.of(Currency.values())));
         Mockito.verify(exchangeRateMapper).entityListToDto(Collections.singletonList(exchangeRate));
-        Mockito.verify(exchangeRateConverter).convertToBaseCurrency(dto, filter);
+        Mockito.verify(exchangeRateDtoConverter).convertToBaseCurrency(dto, filter);
     }
 
     @Test
     @DisplayName("saveOrUpdate() should save new object if old is not found")
     public void saveOrUpdateShouldSaveNewObjectIfOldIsNotFound() {
         Date newYear2020 = new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime();
-        ExchangeRate exchangeRate = ExchangeRate.builder()
-                .date(newYear2020)
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.USD)
-                .rate(1.3)
-                .build();
+        ExchangeRate exchangeRate = new ExchangeRate();
+        exchangeRate.setDate(newYear2020);
+        exchangeRate.setBaseCurrency(Currency.EUR);
+        exchangeRate.setCurrency(Currency.USD);
+        exchangeRate.setRate(1.3);
+
         when(exchangeRateRepository.findFirstByCurrencyAndDateLessThanEqualOrderByDateDesc(Currency.USD, newYear2020))
                 .thenReturn(Optional.empty());
         when(exchangeRateRepository.save(exchangeRate))
@@ -144,29 +144,29 @@ public class ExchangeRateServiceImplTest {
     @DisplayName("saveOrUpdate() should save new object if old is found")
     public void saveOrUpdateShouldUpdateOldObjectIfFound() {
         Date newYear2020 = new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime();
-        ExchangeRate exchangeRate = ExchangeRate.builder()
-                .date(newYear2020)
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.USD)
-                .rate(1.3)
-                .build();
-        ExchangeRate rateInDb = ExchangeRate.builder()
-                .id(1L)
-                .date(newYear2020)
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.USD)
-                .rate(1.22)
-                .build();
-        ExchangeRate updatedRateInDb = ExchangeRate.builder()
-                .id(1L)
-                .date(newYear2020)
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.USD)
-                .rate(1.3)
-                .build();
+        ExchangeRate exchangeRate = new ExchangeRate();
+        exchangeRate.setDate(newYear2020);
+        exchangeRate.setBaseCurrency(Currency.EUR);
+        exchangeRate.setCurrency(Currency.USD);
+        exchangeRate.setRate(1.3);
+
+        ExchangeRate rateInDb = new ExchangeRate();
+        rateInDb.setId(1L);
+        rateInDb.setDate(newYear2020);
+        rateInDb.setBaseCurrency(Currency.EUR);
+        rateInDb.setCurrency(Currency.USD);
+        rateInDb.setRate(1.22);
+
+        ExchangeRate updatedRateInDb = new ExchangeRate();
+        updatedRateInDb.setId(1L);
+        updatedRateInDb.setDate(newYear2020);
+        updatedRateInDb.setBaseCurrency(Currency.EUR);
+        updatedRateInDb.setCurrency(Currency.USD);
+        updatedRateInDb.setRate(1.3);
+
         when(exchangeRateRepository.findFirstByCurrencyAndDateLessThanEqualOrderByDateDesc(Currency.USD, newYear2020))
                 .thenReturn(Optional.of(rateInDb));
-        when(exchangeRateRepository.save(updatedRateInDb))
+        when(exchangeRateRepository.save(rateInDb))
                 .thenReturn(updatedRateInDb);
 
         var result = exchangeRateService.saveOrUpdate(exchangeRate);
@@ -180,7 +180,7 @@ public class ExchangeRateServiceImplTest {
                 () -> assertEquals(Currency.EUR, result.getBaseCurrency()),
                 () -> assertEquals(1.3, result.getRate())
         );
-        Mockito.verify(exchangeRateRepository).save(updatedRateInDb);
+        Mockito.verify(exchangeRateRepository).save(rateInDb);
     }
 
     @Test
@@ -211,18 +211,6 @@ public class ExchangeRateServiceImplTest {
         exchangeRateService.writeEcbRatesToDb(ecbEnvelope);
 
         verify(exchangeRateRepository, times(2)).save(any(ExchangeRate.class));
-        verify(exchangeRateRepository).save(ExchangeRate.builder()
-                .date(ratesByDate.getDate())
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.USD)
-                .rate(1.3)
-                .build());
-        verify(exchangeRateRepository).save(ExchangeRate.builder()
-                .date(ratesByDate.getDate())
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.RUB)
-                .rate(999.9)
-                .build());
     }
 
     @Test
@@ -230,18 +218,17 @@ public class ExchangeRateServiceImplTest {
     public void getHistoryRates_withCorrectFilter() {
         Date newYear2020 = new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime();
         Date secondOfJanuary2020 = new GregorianCalendar(2020, Calendar.JANUARY, 2).getTime();
-        ExchangeRate exchangeRate1 = ExchangeRate.builder()
-                .date(newYear2020)
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.USD)
-                .rate(1.3)
-                .build();
-        ExchangeRate exchangeRate2 = ExchangeRate.builder()
-                .date(newYear2020)
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.USD)
-                .rate(1.4)
-                .build();
+        ExchangeRate exchangeRate1 = new ExchangeRate();
+        exchangeRate1.setDate(newYear2020);
+        exchangeRate1.setBaseCurrency(Currency.EUR);
+        exchangeRate1.setCurrency(Currency.USD);
+        exchangeRate1.setRate(1.3);
+
+        ExchangeRate exchangeRate2 = new ExchangeRate();
+        exchangeRate2.setDate(newYear2020);
+        exchangeRate2.setBaseCurrency(Currency.EUR);
+        exchangeRate2.setCurrency(Currency.USD);
+        exchangeRate2.setRate(1.4);
 
         ExchangeRateDto dto1 = new ExchangeRateDto();
         dto1.setDate(newYear2020);
@@ -261,9 +248,9 @@ public class ExchangeRateServiceImplTest {
                 .thenReturn(List.of(exchangeRate1, exchangeRate2));
         when(exchangeRateMapper.entityListToDtoList(List.of(exchangeRate1, exchangeRate2)))
                 .thenReturn(List.of(dto1, dto2));
-        when(exchangeRateConverter.convertToBaseCurrency(dto1, filter))
+        when(exchangeRateDtoConverter.convertToBaseCurrency(dto1, filter))
                 .thenReturn(dto1);
-        when(exchangeRateConverter.convertToBaseCurrency(dto2, filter))
+        when(exchangeRateDtoConverter.convertToBaseCurrency(dto2, filter))
                 .thenReturn(dto2);
 
         List<ExchangeRateDto> result = exchangeRateService.getHistoryRates(filter);
@@ -276,7 +263,7 @@ public class ExchangeRateServiceImplTest {
         Mockito.verify(exchangeRateRepository).findByDateGreaterThanEqualAndDateLessThanEqualAndCurrencyIn(
                 newYear2020, secondOfJanuary2020, new HashSet<>(Set.of(Currency.values())));
         Mockito.verify(exchangeRateMapper).entityListToDtoList(List.of(exchangeRate1, exchangeRate2));
-        Mockito.verify(exchangeRateConverter).convertToBaseCurrency(dto1, filter);
-        Mockito.verify(exchangeRateConverter).convertToBaseCurrency(dto2, filter);
+        Mockito.verify(exchangeRateDtoConverter).convertToBaseCurrency(dto1, filter);
+        Mockito.verify(exchangeRateDtoConverter).convertToBaseCurrency(dto2, filter);
     }
 }

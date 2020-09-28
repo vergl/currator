@@ -36,12 +36,12 @@ public class ExchangeRateMapperTest {
     @DisplayName("entityToDto() with correct value should return new dto")
     public void entityToDto_withEntity() {
         Date newYear2020 = new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime();
-        ExchangeRate entity = ExchangeRate.builder()
-                .date(newYear2020)
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.USD)
-                .rate(1.3)
-                .build();
+        ExchangeRate entity = new ExchangeRate();
+        entity.setDate(newYear2020);
+        entity.setBaseCurrency(Currency.EUR);
+        entity.setCurrency(Currency.USD);
+        entity.setRate(1.3);
+
         ExchangeRateDto result = mapper.entityToDto(entity);
 
         Assertions.assertNotNull(result);
@@ -73,18 +73,17 @@ public class ExchangeRateMapperTest {
     @DisplayName("entityListToDto() with correct values should return new dto")
     public void entityListToDto_withEntities() {
         Date newYear2020 = new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime();
-        ExchangeRate entity1 = ExchangeRate.builder()
-                .date(newYear2020)
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.USD)
-                .rate(1.3)
-                .build();
-        ExchangeRate entity2 = ExchangeRate.builder()
-                .date(newYear2020)
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.RUB)
-                .rate(70.0)
-                .build();
+        ExchangeRate entity1 = new ExchangeRate();
+        entity1.setDate(newYear2020);
+        entity1.setBaseCurrency(Currency.EUR);
+        entity1.setCurrency(Currency.USD);
+        entity1.setRate(1.3);
+
+        ExchangeRate entity2 = new ExchangeRate();
+        entity2.setDate(newYear2020);
+        entity2.setBaseCurrency(Currency.EUR);
+        entity2.setCurrency(Currency.RUB);
+        entity2.setRate(70.0);
 
         ExchangeRateDto result = mapper.entityListToDto(List.of(entity1, entity2));
 
@@ -96,6 +95,27 @@ public class ExchangeRateMapperTest {
         Assertions.assertEquals(BigDecimal.valueOf(1.3), result.getRates().get(Currency.USD));
         Assertions.assertTrue(result.getRates().containsKey(Currency.RUB));
         Assertions.assertEquals(BigDecimal.valueOf(70.0), result.getRates().get(Currency.RUB));
+    }
+
+    @Test
+    @DisplayName("entityListToDto() with values from different days should throw an exception")
+    public void entityListToDto_withDifferentDays() {
+        Date newYear2020 = new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime();
+        Date secondOfJanuary2020 = new GregorianCalendar(2020, Calendar.JANUARY, 2).getTime();
+        ExchangeRate entity1 = new ExchangeRate();
+        entity1.setDate(newYear2020);
+        entity1.setBaseCurrency(Currency.EUR);
+        entity1.setCurrency(Currency.USD);
+        entity1.setRate(1.3);
+
+        ExchangeRate entity2 = new ExchangeRate();
+        entity2.setDate(secondOfJanuary2020);
+        entity2.setBaseCurrency(Currency.EUR);
+        entity2.setCurrency(Currency.RUB);
+        entity2.setRate(70.0);
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> mapper.entityListToDto(List.of(entity1, entity2)));
     }
 
     @Test
@@ -120,18 +140,17 @@ public class ExchangeRateMapperTest {
     public void entityListToDtoList_withEntities() {
         Date newYear2020 = new GregorianCalendar(2020, Calendar.JANUARY, 1).getTime();
         Date secondOfJanuary2020 = new GregorianCalendar(2020, Calendar.JANUARY, 2).getTime();
-        ExchangeRate entity1 = ExchangeRate.builder()
-                .date(newYear2020)
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.USD)
-                .rate(1.3)
-                .build();
-        ExchangeRate entity2 = ExchangeRate.builder()
-                .date(secondOfJanuary2020)
-                .baseCurrency(Currency.EUR)
-                .currency(Currency.USD)
-                .rate(1.4)
-                .build();
+        ExchangeRate entity1 = new ExchangeRate();
+        entity1.setDate(newYear2020);
+        entity1.setBaseCurrency(Currency.EUR);
+        entity1.setCurrency(Currency.USD);
+        entity1.setRate(1.3);
+
+        ExchangeRate entity2 = new ExchangeRate();
+        entity2.setDate(secondOfJanuary2020);
+        entity2.setBaseCurrency(Currency.EUR);
+        entity2.setCurrency(Currency.USD);
+        entity2.setRate(1.4);
 
         List<ExchangeRateDto> resultList = mapper.entityListToDtoList(List.of(entity1, entity2));
 
