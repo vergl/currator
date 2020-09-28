@@ -4,7 +4,7 @@ jobs:
   build:
     working_directory: ~/currator
     docker:
-      - image: 'circleci/openjdk:latest'
+      - image: 'cimg/openjdk:15.0'
     steps:
       - checkout
       - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
