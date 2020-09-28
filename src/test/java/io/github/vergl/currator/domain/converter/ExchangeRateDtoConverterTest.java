@@ -16,13 +16,13 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-public class ExchangeRateConverterTest {
+public class ExchangeRateDtoConverterTest {
 
-    private ExchangeRateConverter converter;
+    private ExchangeRateDtoConverter converter;
 
     @BeforeEach
     public void setUp() {
-        converter = new ExchangeRateConverter();
+        converter = new ExchangeRateDtoConverter();
     }
 
     @Test

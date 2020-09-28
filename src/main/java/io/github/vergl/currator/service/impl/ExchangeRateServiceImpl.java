@@ -2,7 +2,7 @@ package io.github.vergl.currator.service.impl;
 
 import io.github.vergl.currator.domain.ExchangeRate;
 import io.github.vergl.currator.domain.ExchangeRateDto;
-import io.github.vergl.currator.domain.converter.ExchangeRateConverter;
+import io.github.vergl.currator.domain.converter.ExchangeRateDtoConverter;
 import io.github.vergl.currator.domain.ecb.EcbEnvelope;
 import io.github.vergl.currator.domain.enumeration.Currency;
 import io.github.vergl.currator.domain.filter.ExchangeRateDateFilter;
@@ -10,21 +10,23 @@ import io.github.vergl.currator.domain.filter.ExchangeRateHistoryFilter;
 import io.github.vergl.currator.domain.mapper.ExchangeRateMapper;
 import io.github.vergl.currator.repository.ExchangeRateRepository;
 import io.github.vergl.currator.service.ExchangeRateService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-@Log4j2
 @Service
-@RequiredArgsConstructor
 public class ExchangeRateServiceImpl implements ExchangeRateService {
 
     private final ExchangeRateRepository repository;
     private final ExchangeRateMapper mapper;
-    private final ExchangeRateConverter converter;
+    private final ExchangeRateDtoConverter converter;
+
+    public ExchangeRateServiceImpl(ExchangeRateRepository repository, ExchangeRateMapper mapper, ExchangeRateDtoConverter converter) {
+        this.repository = repository;
+        this.mapper = mapper;
+        this.converter = converter;
+    }
 
     @Override
     public ExchangeRateDto getByDate(ExchangeRateDateFilter filter) {
@@ -57,12 +59,14 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
                 .ifPresent(ecbEnvelope ->
                         ecbEnvelope.getRates().forEach(ratesByDate ->
                                 ratesByDate.getRates().stream()
-                                        .map(rate -> ExchangeRate.builder()
-                                                .date(ratesByDate.getDate())
-                                                .baseCurrency(Currency.EUR)
-                                                .currency(rate.getCurrency())
-                                                .rate(rate.getRate())
-                                                .build())
+                                        .map(rate -> {
+                                            ExchangeRate er = new ExchangeRate();
+                                            er.setDate(ratesByDate.getDate());
+                                            er.setBaseCurrency(Currency.EUR);
+                                            er.setCurrency(rate.getCurrency());
+                                            er.setRate(rate.getRate());
+                                            return er;
+                                        })
                                         .forEach(repository::save))
                 );
     }

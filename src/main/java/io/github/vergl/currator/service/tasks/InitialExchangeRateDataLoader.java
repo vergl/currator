@@ -4,21 +4,30 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.github.vergl.currator.domain.ecb.EcbEnvelope;
 import io.github.vergl.currator.service.EcbService;
 import io.github.vergl.currator.service.ExchangeRateService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 
-@Log4j2
 @Service
-@RequiredArgsConstructor
 public class InitialExchangeRateDataLoader {
+
+    private final static Logger log = LoggerFactory.getLogger(InitialExchangeRateDataLoader.class);
 
     private final ExchangeRateService exchangeRateService;
     private final EcbService ecbService;
 
+    public InitialExchangeRateDataLoader(ExchangeRateService exchangeRateService, EcbService ecbService) {
+        this.exchangeRateService = exchangeRateService;
+        this.ecbService = ecbService;
+    }
+
+    /**
+     * Method which is used to get initial data to a database if the database is empty.
+     * Runs after starting the application.
+     */
     @EventListener(ApplicationReadyEvent.class)
     public void loadInitialData() {
         log.info("Database initialization has started.");

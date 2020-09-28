@@ -10,8 +10,16 @@ import java.math.RoundingMode;
 import java.util.Map;
 
 @Service
-public class ExchangeRateConverter {
+public class ExchangeRateDtoConverter {
 
+    /**
+     * Converts DTO from one base currency to another
+     * according to ExchangeRateBaseFilter.
+     *
+     * @param dto    DTO to convert
+     * @param filter request filter
+     * @return DTO with rates converted to another base currency
+     */
     public ExchangeRateDto convertToBaseCurrency(ExchangeRateDto dto, ExchangeRateBaseFilter filter) {
         Currency newBaseCurrency = filter.getBase();
         Currency currentBaseCurrency = dto.getBase();
@@ -25,7 +33,7 @@ public class ExchangeRateConverter {
             throw new IllegalArgumentException();
         }
 
-        currentRates.replaceAll((curr, rate) -> rate = rate.divide(newBaseRate,4, RoundingMode.HALF_UP));
+        currentRates.replaceAll((curr, rate) -> rate = rate.divide(newBaseRate, 4, RoundingMode.HALF_UP));
         if (filter.getCurrencies().contains(currentBaseCurrency)) {
             currentRates.put(currentBaseCurrency, BigDecimal.ONE.divide(newBaseRate, 4, RoundingMode.HALF_UP));
         }

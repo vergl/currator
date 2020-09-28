@@ -1,5 +1,8 @@
 package io.github.vergl.currator.domain.enumeration;
 
+/**
+ * Enumeration with all currencies available in the service.
+ */
 public enum Currency {
 
     EUR("EU euro"),
