@@ -22,7 +22,7 @@
         <sonar.organization>vergl</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.login>6ecca51a9d9f1814cf66539288417c7fb9af5c15</sonar.login>
-        <swagger.version>2.9.2</swagger.version>
+        <swagger.version>2.10.0</swagger.version>
     </properties>
 
     <dependencies>
